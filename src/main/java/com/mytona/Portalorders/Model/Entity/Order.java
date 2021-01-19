@@ -19,5 +19,5 @@ public class Order implements Serializable {
     private long customerId;
     private long paymentId;
     private long deliveryId;
-    private boolean approved;
+    private boolean confirmed;
 }

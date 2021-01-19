@@ -1,7 +1,9 @@
 package com.mytona.Portalorders.Controller;
 
 import com.mytona.Portalorders.Model.DAO.OrderDAO;
+import com.mytona.Portalorders.Model.Entity.Customer;
 import com.mytona.Portalorders.Model.Entity.Order;
+import com.mytona.Portalorders.Service.CustomerInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +21,14 @@ public class OrdersController {
     @Autowired
     private OrderDAO orderDAO;
 
+    @Autowired
+    CustomerInfo customerInfo;
+
     @GetMapping("/{orderId}")
     public Order get(@PathVariable("orderId") long orderId) {
-        return orderDAO.findOrder(orderId);
+        Order order = orderDAO.findOrder(orderId);
+        Customer customer = customerInfo.getCustomer(order.getCustomerId());
+        return order;
     }
 
     @GetMapping("/all")

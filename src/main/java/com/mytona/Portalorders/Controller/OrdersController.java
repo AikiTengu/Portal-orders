@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,8 +67,45 @@ public class OrdersController {
     }
 
     @GetMapping("/all")
-    public List<Order> getAll(){
-        return orderDAO.findAll();
+    public List<OrderItem> getAll(){
+
+        List<Order> orders = orderDAO.findAll();
+
+        List<OrderItem> orderInfos = new ArrayList<>();
+
+        for (Order order: orders) {
+            OrderItem orderItem = new OrderItem();
+            Customer customer = customerInfo.getCustomer(order.getCustomerId());
+            Delivery delivery = deliveryInfo.getDelivery(order.getDeliveryId());
+            Payment payment = paymentInfo.getPayment(order.getPaymentId());
+
+            orderItem.setOrderId(order.getOrderId());
+            orderItem.setDeliveryId(order.getDeliveryId());
+            orderItem.setPaymentId(order.getPaymentId());
+            orderItem.setConfirmed(order.isConfirmed());
+
+            if (customer != null) {
+                orderItem.setCustomerFirstName(customer.getFirstName());
+                orderItem.setCustomerSecondName(customer.getSecondName());
+                orderItem.setCustomerAddress(customer.getAddress());
+            }
+
+            if (delivery != null) {
+                orderItem.setDeliveryType(delivery.getDeliveryType());
+                orderItem.setDeliveryDate(delivery.getDate());
+                orderItem.setDeliveryAddress(delivery.getAddress());
+                orderItem.setDelivered(delivery.isDelivered());
+            }
+
+            if (payment != null){
+                orderItem.setPaymentDate(payment.getDate());
+                orderItem.setCurrencyType(payment.getCurrencyType());
+                orderItem.setSum(payment.getSum());
+            }
+            orderInfos.add(orderItem);
+        }
+
+        return orderInfos;
     }
 
 

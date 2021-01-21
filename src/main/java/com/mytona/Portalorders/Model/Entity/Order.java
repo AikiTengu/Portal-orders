@@ -21,3 +21,4 @@ public class Order implements Serializable {
     private long deliveryId;
     private boolean confirmed;
 }
+
